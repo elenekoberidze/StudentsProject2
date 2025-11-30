@@ -13,13 +13,14 @@ namespace StudentsProject2.Models
     {
         public int RollNumber { get; set; }
         private char _grade;
+
         public char Grade
         {
             get => _grade;
             set
             {
                 char g = char.ToUpper(value);
-                if (!"ABCDEF".Contains(g))
+                if (!"ABCDEF".Any(c => c == g))
                 {
                     throw new ArgumentException("Grade must be between A-F.");
                 }
@@ -27,6 +28,7 @@ namespace StudentsProject2.Models
             }
 
         }
+        
 
         public Student() { }
 

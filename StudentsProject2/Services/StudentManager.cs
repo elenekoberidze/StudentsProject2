@@ -57,22 +57,46 @@ namespace StudentsProject2.Services
 
             if (!File.Exists(filePath))
             {
+                Console.WriteLine("Data file 'students.xml' not found. Starting with an empty list.");
                 return;
             }
 
             XmlSerializer serializer = new(typeof(List<Student>));
 
-            using FileStream fs = new(filePath, FileMode.Open);
-
-            if (serializer.Deserialize(fs) is List<Student> loaded)
+            try
             {
-                students.Clear();
-                foreach (var student in loaded)
+                using FileStream fs = new(filePath, FileMode.Open);
+
+            
+                if (fs.Length == 0)
                 {
-                    students.Add(student);
+                    Console.WriteLine("Data file 'students.xml' exists but is empty. Starting with an empty list.");
+                    return;
+                }
+
+                if (serializer.Deserialize(fs) is List<Student> loaded)
+                {
+                    students.Clear();
+                    foreach (var student in loaded)
+                    {
+                        students.Add(student);
+                    }
+                    Console.WriteLine($"Successfully loaded {students.Count} students from file.");
                 }
             }
-
+            catch (InvalidOperationException ex) when (ex.InnerException is System.Xml.XmlException)
+            {
+         
+                Console.WriteLine($"Error deserializing XML data.");
+                Console.WriteLine($"Details: {ex.InnerException.Message}");
+            }
+            catch (Exception ex)
+            {
+              
+                Console.WriteLine($"An unexpected error occurred while loading data: {ex.Message}");
+            }
         }
     }
+
 }
+    

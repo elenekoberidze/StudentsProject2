@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace StudentsProject2.Models
 {
+    
     public abstract class Person
     {
         public string Name { get; set; } = string.Empty;
@@ -17,8 +19,6 @@ namespace StudentsProject2.Models
         }
 
         protected Person() { }
-       
-
         public abstract void PrintInfo();
     }
 }
