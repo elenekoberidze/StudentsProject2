@@ -17,7 +17,6 @@ namespace StudentsProject2.Models
                 throw new ArgumentException("Name cannot be empty.");
             this.Name = name.Trim();
         }
-
         protected Person() { }
         public abstract void PrintInfo();
     }

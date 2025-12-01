@@ -3,6 +3,11 @@
   <Student>
     <Name>elene</Name>
     <RollNumber>1</RollNumber>
+    <Grade>66</Grade>
+  </Student>
+  <Student>
+    <Name>luka</Name>
+    <RollNumber>3</RollNumber>
     <Grade>70</Grade>
   </Student>
 </ArrayOfStudents>

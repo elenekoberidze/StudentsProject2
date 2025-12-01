@@ -8,12 +8,14 @@ using System.Xml.Serialization;
 
 namespace StudentsProject2.Services
 {
-    public class StudentManager
+    public class StudentManager 
     {
         private readonly List<Student> students = [];
         public event Action<Student>? StudentAdded;
+        
         public void AddStudent(Student student)
         {
+            
             if (students.Any(s => s.RollNumber == student.RollNumber))
             {
                 throw new ArgumentException($"Student with roll number {student.RollNumber} already exists.");
@@ -40,7 +42,7 @@ namespace StudentsProject2.Services
             const string fileName = "students.xml";
             const string targetDirectory = "Data";
             string currentPath = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo directory = new DirectoryInfo(currentPath);
+            DirectoryInfo directory = new(currentPath);
             while (directory != null && directory.Name != "bin")
             {
                 directory = directory.Parent;
@@ -98,7 +100,8 @@ namespace StudentsProject2.Services
                 {
                     students.Clear();
                     students.AddRange(loaded);
-                    Console.WriteLine($"Successfully loaded {students.Count} students from file."); 
+                   
+                        Console.WriteLine($"Successfully loaded {students.Count} students from file."); 
                 }
             }
             //catch (InvalidOperationException ex)

@@ -11,6 +11,7 @@ namespace StudentsProject2.Models
 {
     public class Student : Person
     {
+
         public int RollNumber { get; set; }
         private char _grade;
 
