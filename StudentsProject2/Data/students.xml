@@ -1,2 +1,8 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ArrayOfStudents></ArrayOfStudents> 
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfStudents xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Student>
+    <Name>elene</Name>
+    <RollNumber>1</RollNumber>
+    <Grade>70</Grade>
+  </Student>
+</ArrayOfStudents>

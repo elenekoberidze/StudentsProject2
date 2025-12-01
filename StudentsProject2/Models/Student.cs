@@ -28,11 +28,11 @@ namespace StudentsProject2.Models
             }
 
         }
-        
+
 
         public Student() { }
 
-    
+
         public event Action<Student, char>? GradeChanged;
 
         public Student(string name, int rollNumber, char grade) : base(name)

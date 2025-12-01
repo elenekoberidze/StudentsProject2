@@ -35,33 +35,53 @@ namespace StudentsProject2.Services
             student.UpdateGrade(newGrade);
         }
 
-
+        private static string GetFilePath()
+        {
+            const string fileName = "students.xml";
+            const string targetDirectory = "Data";
+            string currentPath = AppDomain.CurrentDomain.BaseDirectory;
+            DirectoryInfo directory = new DirectoryInfo(currentPath);
+            while (directory != null && directory.Name != "bin")
+            {
+                directory = directory.Parent;
+            }
+            DirectoryInfo projectRoot = (directory?.Parent) ?? throw new DirectoryNotFoundException("Could not find the project root directory by searching for 'bin'.");
+            string dataPath = Path.Combine(projectRoot.FullName, targetDirectory);
+            Directory.CreateDirectory(dataPath);
+            return Path.Combine(dataPath, fileName);
+        }
         public void SaveStudentsToFile()
         {
-            string filePath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Data", "students.xml");
+            string filePath = GetFilePath();
 
-            XmlSerializer serializer = new(typeof(List<Student>));
+            XmlRootAttribute root = new("ArrayOfStudents");
+            XmlSerializer serializer = new(typeof(List<Student>), root);
 
-            using FileStream fs = new(filePath, FileMode.Create);
-            serializer.Serialize(fs, students);
+            try
+            {
+                using FileStream fs = new(filePath, FileMode.Create);
+                serializer.Serialize(fs, students);
+                Console.WriteLine($"Successfully saved {students.Count} students to:\n{filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving data: {ex.Message}");
+            }
 
         }
 
         public void LoadStudentsFromFile()
         {
-            string filePath = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Data", "students.xml");
+            string filePath = GetFilePath();
 
             if (!File.Exists(filePath))
             {
-                Console.WriteLine("Data file 'students.xml' not found. Starting with an empty list.");
+                //Console.WriteLine("Data file 'students.xml' not found. Starting with an empty list.");
                 return;
             }
 
-            XmlSerializer serializer = new(typeof(List<Student>));
+            XmlRootAttribute root = new("ArrayOfStudents");
+            XmlSerializer serializer = new(typeof(List<Student>), root);
 
             try
             {
@@ -77,23 +97,20 @@ namespace StudentsProject2.Services
                 if (serializer.Deserialize(fs) is List<Student> loaded)
                 {
                     students.Clear();
-                    foreach (var student in loaded)
-                    {
-                        students.Add(student);
-                    }
-                    Console.WriteLine($"Successfully loaded {students.Count} students from file.");
+                    students.AddRange(loaded);
+                    Console.WriteLine($"Successfully loaded {students.Count} students from file."); 
                 }
             }
-            catch (InvalidOperationException ex) when (ex.InnerException is System.Xml.XmlException)
-            {
-         
-                Console.WriteLine($"Error deserializing XML data.");
-                Console.WriteLine($"Details: {ex.InnerException.Message}");
-            }
+            //catch (InvalidOperationException ex)
+            //{
+               
+            //    Console.WriteLine($"Error deserializing XML data (Corrupted File).");
+            //    Console.WriteLine($"Details: {ex.InnerException?.Message ?? ex.Message}");
+            //}
             catch (Exception ex)
             {
-              
-                Console.WriteLine($"An unexpected error occurred while loading data: {ex.Message}");
+                Console.WriteLine($"Error loading data. The file might be corrupted.");
+                Console.WriteLine($"Details: {ex.Message}");
             }
         }
     }
