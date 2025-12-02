@@ -23,37 +23,23 @@ namespace StudentsProject2.Services
         public void Run()
         {
             studentManager.LoadStudentsFromFile();
+
             while (true)
             {
                 ShowMenu();
                 string choice = Console.ReadLine() ?? "";
+
                 try
                 {
                     switch (choice)
                     {
-                        case "1":
-                            AddStudent();
-                            break;
-                        case "2":
-                            ViewAll();
-                            break;
-                        case "3":
-                            SearchStudent();
-                            break;
-                        case "4":
-                            UpdateGrade();
-                            break;
-                        case "5":
-                            studentManager.SaveStudentsToFile();
-                            Console.WriteLine("Students saved. Exiting...");
-                            return;
-                        case "6":
-                            Console.WriteLine("Exiting without saving...");
-                            return;
-
-                        default:
-                            Console.WriteLine("Invalid choice. Try again.");
-                            break;
+                        case "1": AddStudent(); break;
+                        case "2": ViewAll(); break;
+                        case "3": SearchStudent(); break;
+                        case "4": UpdateGrade(); break;
+                        case "5": studentManager.SaveStudentsToFile(); return;
+                        case "6": return;
+                        default: Console.WriteLine("Invalid choice"); break;
                     }
                 }
                 catch (Exception ex)

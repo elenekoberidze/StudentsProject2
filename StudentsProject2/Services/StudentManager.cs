@@ -8,14 +8,14 @@ using System.Xml.Serialization;
 
 namespace StudentsProject2.Services
 {
-    public class StudentManager 
+    public class StudentManager
     {
         private readonly List<Student> students = [];
         public event Action<Student>? StudentAdded;
-        
+
         public void AddStudent(Student student)
         {
-            
+
             if (students.Any(s => s.RollNumber == student.RollNumber))
             {
                 throw new ArgumentException($"Student with roll number {student.RollNumber} already exists.");
@@ -39,84 +39,60 @@ namespace StudentsProject2.Services
 
         private static string GetFilePath()
         {
-            const string fileName = "students.xml";
-            const string targetDirectory = "Data";
-            string currentPath = AppDomain.CurrentDomain.BaseDirectory;
-            DirectoryInfo directory = new(currentPath);
-            while (directory != null && directory.Name != "bin")
-            {
-                directory = directory.Parent;
-            }
-            DirectoryInfo projectRoot = (directory?.Parent) ?? throw new DirectoryNotFoundException("Could not find the project root directory by searching for 'bin'.");
-            string dataPath = Path.Combine(projectRoot.FullName, targetDirectory);
+            string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
+            string dataPath = Path.Combine(projectRoot, "Data");
             Directory.CreateDirectory(dataPath);
-            return Path.Combine(dataPath, fileName);
+            string filePath = Path.Combine(dataPath, "students.xml");
+            if (!File.Exists(filePath))
+            {
+                using var fs = File.Create(filePath);
+                fs.Close();
+
+
+                var serializer = new XmlSerializer(typeof(List<Student>));
+                using var sw = new StreamWriter(filePath);
+                serializer.Serialize(sw, new List<Student>());
+            }
+
+            return filePath;
         }
         public void SaveStudentsToFile()
         {
             string filePath = GetFilePath();
+            var serializer = new XmlSerializer(typeof(List<Student>));
 
-            XmlRootAttribute root = new("ArrayOfStudents");
-            XmlSerializer serializer = new(typeof(List<Student>), root);
+            using var fs = new FileStream(filePath, FileMode.Create);
+            serializer.Serialize(fs, students);
 
-            try
-            {
-                using FileStream fs = new(filePath, FileMode.Create);
-                serializer.Serialize(fs, students);
-                Console.WriteLine($"Successfully saved {students.Count} students to:\n{filePath}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error saving data: {ex.Message}");
-            }
+            Console.WriteLine($"Saved {students.Count} students to {filePath}");
 
         }
 
         public void LoadStudentsFromFile()
         {
             string filePath = GetFilePath();
+            if (!File.Exists(filePath)) return;
 
-            if (!File.Exists(filePath))
-            {
-                //Console.WriteLine("Data file 'students.xml' not found. Starting with an empty list.");
-                return;
-            }
-
-            XmlRootAttribute root = new("ArrayOfStudents");
-            XmlSerializer serializer = new(typeof(List<Student>), root);
+            var serializer = new XmlSerializer(typeof(List<Student>));
 
             try
             {
-                using FileStream fs = new(filePath, FileMode.Open);
-
-            
-                if (fs.Length == 0)
-                {
-                    Console.WriteLine("Data file 'students.xml' exists but is empty. Starting with an empty list.");
-                    return;
-                }
+                using var fs = new FileStream(filePath, FileMode.Open);
+                if (fs.Length == 0) return;
 
                 if (serializer.Deserialize(fs) is List<Student> loaded)
                 {
                     students.Clear();
                     students.AddRange(loaded);
-                   
-                        Console.WriteLine($"Successfully loaded {students.Count} students from file."); 
+                    Console.WriteLine($"Loaded {students.Count} students from {filePath}");
                 }
             }
-            //catch (InvalidOperationException ex)
-            //{
-               
-            //    Console.WriteLine($"Error deserializing XML data (Corrupted File).");
-            //    Console.WriteLine($"Details: {ex.InnerException?.Message ?? ex.Message}");
-            //}
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading data. The file might be corrupted.");
-                Console.WriteLine($"Details: {ex.Message}");
+                Console.WriteLine($"Error loading data: {ex.Message}");
             }
         }
-    }
 
+    }
 }
     
