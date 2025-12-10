@@ -17,6 +17,11 @@ namespace StudentsProject2.Models
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("Username cannot be empty.");
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Password cannot be empty.");
+
+            if (password.Length > 10) 
+                throw new ArgumentException("Password cannot be more than 10 characters.");
 
             this.Username = username.Trim();
             this.Password = password;
