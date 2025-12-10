@@ -10,7 +10,7 @@ namespace StudentsProject2.Services
     public class AppController
     {
         private readonly StudentManager studentManager = new();
-
+        private readonly AuthManager authManager = new();
         public AppController()
         {
             studentManager.StudentAdded += (student) =>
@@ -22,8 +22,10 @@ namespace StudentsProject2.Services
 
         public void Run()
         {
+            authManager.LoadUsers();
             studentManager.LoadStudentsFromFile();
-
+            User? currentUser = LoginMenu();
+            Console.WriteLine($"\nWelcome, {currentUser.Username}!");
             while (true)
             {
                 ShowMenu();
@@ -48,6 +50,62 @@ namespace StudentsProject2.Services
                 }
             }
         }
+        private User LoginMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("\n===== LOGIN MENU =====");
+                Console.WriteLine("1. Login");
+                Console.WriteLine("2. Register");
+                Console.Write("Choose: ");
+
+                string choice = Console.ReadLine() ?? "";
+
+                if (choice == "1")
+                {
+                    Console.Write("Username: ");
+                    string user = Console.ReadLine()!;
+                    Console.Write("Password: ");
+
+                    
+                    string pass = ReadPassword();
+
+                    
+                    var logged = authManager.Login(user, pass);
+
+                    if (logged != null)
+                        return logged;  
+
+                    Console.WriteLine("Invalid username or password.\n");
+                }
+
+                else if (choice == "2")
+                {
+                    Console.Write("New username: ");
+                    string user = Console.ReadLine()!;
+
+                    Console.Write("New password: ");
+                    string pass = ReadPassword();
+
+                   
+                    if (authManager.Register(user, pass))
+                        Console.WriteLine("Account created!\n");
+                    else
+                        Console.WriteLine("Username already exists.\n");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid option.\n");
+                }
+            }
+        }
+
+
+        private static string ReadPassword()
+        {
+            return Console.ReadLine() ?? "";
+        }
+
 
         private static void ShowMenu()
         {

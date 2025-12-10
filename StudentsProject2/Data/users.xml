@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <User>
+    <Username>iii</Username>
+    <Password>/V9WtAp5o4VwhCjnsyq5lqaBCAoWaiIG51DrSBkYYUU=</Password>
+  </User>
+  <User>
+    <Username>elene</Username>
+    <Password>DVR15NwMTktSH9k/CdQOBnRSafr7NrqYEqyQP8UPMvo=</Password>
+  </User>
+  <User>
+    <Username>luka</Username>
+    <Password>123luka</Password>
+  </User>
+</ArrayOfUser>

@@ -39,21 +39,29 @@ namespace StudentsProject2.Services
 
         private static string GetFilePath()
         {
-            string projectRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", ".."));
-            string dataPath = Path.Combine(projectRoot, "Data");
+            
+            string projectDir = Directory.GetParent(
+                Directory.GetCurrentDirectory()
+            )!.Parent!.Parent!.FullName;
+
+           
+            string dataPath = Path.Combine(projectDir, "Data");
+
+           
             Directory.CreateDirectory(dataPath);
+
+            
             string filePath = Path.Combine(dataPath, "students.xml");
+
+            
             if (!File.Exists(filePath))
             {
-                using var fs = File.Create(filePath);
-                fs.Close();
-
-
                 var serializer = new XmlSerializer(typeof(List<Student>));
-                using var sw = new StreamWriter(filePath);
-                serializer.Serialize(sw, new List<Student>());
-            }
 
+                using var fs = new FileStream(filePath, FileMode.Create);
+                serializer.Serialize(fs, new List<Student>());
+            }
+           
             return filePath;
         }
         public void SaveStudentsToFile()
