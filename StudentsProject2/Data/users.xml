@@ -12,4 +12,8 @@
     <Username>luka</Username>
     <Password>123luka</Password>
   </User>
+  <User>
+    <Username>hahaha</Username>
+    <Password>elene33</Password>
+  </User>
 </ArrayOfUser>

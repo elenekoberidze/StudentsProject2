@@ -103,7 +103,21 @@ namespace StudentsProject2.Services
 
         private static string ReadPassword()
         {
-            return Console.ReadLine() ?? "";
+            string pass;
+            while (true)
+            {
+                Console.Write("Password: ");
+                pass = Console.ReadLine() ?? "";
+
+                if (pass.Length > 10)
+                {
+                    Console.WriteLine("Password cannot be more than 10 characters. Please try again.\n");
+                    continue; 
+                }
+
+                break; 
+            }
+            return pass;
         }
 
 
